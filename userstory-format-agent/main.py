@@ -22,6 +22,7 @@ class AzureDevOpsA2AExecutor(AgentExecutor):
         try:
             thread = self.threads.get(context.context_id)
             response = await self.agent.get_response(messages=context.get_user_input(), thread=thread)
+            print (response)
             
             if response and response.thread:
                 self.threads[context.context_id] = response.thread
@@ -33,6 +34,7 @@ class AzureDevOpsA2AExecutor(AgentExecutor):
             await event_queue.enqueue_event(new_agent_text_message(error))
 
     def _extract_content(self, response) -> str:
+        print (response)
         if not response:
             return ""
         

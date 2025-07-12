@@ -10,3 +10,5 @@ fastapi==0.115.13
 semantic-kernel==1.34.0
 microsoft-agents-core
 microsoft-agents-copilotstudio-client
+
+a2a-sdk[sqlite]==0.2.11
