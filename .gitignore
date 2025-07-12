@@ -2,3 +2,13 @@
 venv
 .DS_Store
 pyc
+__pycache__
+
+# MCP Servers (downloaded during setup)
+mcp-servers/
+*/.env
+
+# MCP Server artifacts
+*.zip
+azure-devops-mcp/
+mcp-atlassian/
