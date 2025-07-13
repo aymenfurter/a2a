@@ -12,6 +12,7 @@ python-dotenv
 semantic-kernel==1.34.0
 microsoft-agents-core
 microsoft-agents-copilotstudio-client
+openai>=1.0.0
 
 # Azure AI dependencies for MCP agents
 azure-ai-projects

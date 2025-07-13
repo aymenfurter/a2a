@@ -12,3 +12,59 @@ mcp-servers/
 *.zip
 azure-devops-mcp/
 mcp-atlassian/
+
+
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Dotnet
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Bicep
+/bicepconfig.json
+
+# Local files
+/parameters.*.json
+/appsettings.Development.json
+
+# Test results
+/TestResults
+/coverage
+
+# Rider
+/exportToHTML/
+/coverage-report/
+
+# Packages
+*.nupkg
+*.snupkg
+
+# Secrets
+*.secrets.yaml
+*.secrets.json
+
+# Node
+node_modules/
+npm-debug.log
+
+# Docker
+.dockerignore
+
+# Misc
+*.swp
+*~
+.DS_Store
+
+
+mcp-landing-zone/paramters.json
