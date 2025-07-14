@@ -28,11 +28,7 @@ async def main():
    - Description: Review and update the REST API documentation for the project
    - Acceptance Criteria: Documentation is up to date and accurate
 
-2. **User Story**: Implement user authentication
-   - Description: As a user, I want to be able to log in securely so that I can access my account
-   - Acceptance Criteria: User can log in with email/password, session management works properly
-
-Please provide confirmation of successful creation with work item IDs."""
+Please provide confirmation of successful creation."""
             
             response = await client.send_message(SendMessageRequest(
                 id=str(uuid4()),

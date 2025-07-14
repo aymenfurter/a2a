@@ -65,6 +65,3 @@ npm-debug.log
 *.swp
 *~
 .DS_Store
-
-
-mcp-landing-zone/paramters.json

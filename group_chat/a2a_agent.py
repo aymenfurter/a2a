@@ -42,45 +42,40 @@ class A2AChannel:
         self.history = ChatHistory()
 
 class RemoteA2AAgent(Agent):
-    def __init__(self, name: str, description: str, a2a_client: A2AClient):
+    def __init__(self, name: str, description: str, a2a_client: A2AClient, use_last_message_only: bool = False):
         super().__init__(name=name, description=description)
         self._client = a2a_client
         self._context_id = f"chat-session-{uuid4().hex}"
+        self._use_last_message_only = use_last_message_only
 
     @classmethod
-    async def create(cls, base_url: str, name: str, description: str = None) -> "RemoteA2AAgent":
+    async def create(cls, base_url: str, name: str, description: str = None, use_last_message_only: bool = False) -> "RemoteA2AAgent":
         httpx_client = httpx.AsyncClient(timeout=30.0)
         resolver = A2ACardResolver(httpx_client=httpx_client, base_url=base_url)
         agent_card = await resolver.get_agent_card()
         a2a_client = A2AClient(httpx_client=httpx_client, agent_card=agent_card)
         agent_description = description or agent_card.description or f"A2A {name} Agent"
-        return cls(name=name, description=agent_description, a2a_client=a2a_client)
+        instance = cls(name=name, description=agent_description, a2a_client=a2a_client, use_last_message_only=use_last_message_only)
+        # Store agent card for UI access
+        instance._agent_card = agent_card
+        return instance
+
+    @property
+    def agent_card(self):
+        """Access to the agent card for UI display."""
+        return getattr(self, '_agent_card', None)
+
+    def _extract_messages(self, messages):
+        if hasattr(self, '_current_channel') and hasattr(self._current_channel, 'history'):
+            messages = self._current_channel.history
+        
+        if isinstance(messages, ChatHistory) and messages.messages:
+            msgs = [messages.messages[-1]] if self._use_last_message_only else messages.messages
+            return "\n\n".join([f"{getattr(msg, 'role', 'user')}{f' ({msg.name})' if hasattr(msg, 'name') and msg.name else ''}: {msg.content}" for msg in msgs])
+        return str(messages) if messages else "Hello"
 
     async def _invoke_agent(self, messages) -> ChatMessageContent:
-        prompt = ""
-        if hasattr(self, '_current_channel') and hasattr(self._current_channel, 'history'):
-            channel_history = self._current_channel.history
-            if channel_history.messages:
-                context_messages = []
-                for i, msg in enumerate(channel_history.messages):
-                    role_str = str(msg.role) if hasattr(msg, 'role') else 'user'
-                    name_str = f" ({msg.name})" if hasattr(msg, 'name') and msg.name else ""
-                    content = str(msg.content)
-                    context_messages.append(f"{role_str}{name_str}: {content}")
-                prompt = "\n\n".join(context_messages)
-        elif isinstance(messages, ChatHistory) and messages.messages:
-            context_messages = []
-            for msg in messages.messages:
-                role_str = str(msg.role) if hasattr(msg, 'role') else 'user'
-                name_str = f" ({msg.name})" if hasattr(msg, 'name') and msg.name else ""
-                content = str(msg.content)
-                context_messages.append(f"{role_str}{name_str}: {content}")
-            prompt = "\n\n".join(context_messages)
-        elif messages:
-            prompt = str(messages)
-        else:
-            prompt = "Hello"
-        
+        prompt = self._extract_messages(messages)
         request = SendMessageRequest(
             id=str(uuid4()),
             params=MessageSendParams(
@@ -97,7 +92,6 @@ class RemoteA2AAgent(Agent):
         response = await self._client.send_message(request)
         event = response.root.result
         
-        # Extract clean text content like Azure AI agent does
         response_text = ""
         if hasattr(event, 'parts') and event.parts:
             for part in event.parts:
@@ -108,10 +102,7 @@ class RemoteA2AAgent(Agent):
                     response_text = part.text
                     break
         
-        if not response_text:
-            response_text = str(event)
-        
-        return ChatMessageContent(role="assistant", content=response_text, name=self.name)
+        return ChatMessageContent(role="assistant", content=response_text or str(event), name=self.name)
     
     def get_channel_keys(self):
         return ["A2AChannel"]
@@ -119,34 +110,23 @@ class RemoteA2AAgent(Agent):
     async def create_channel(self):
         return A2AChannel(self)
     
-    async def invoke(self, messages=None, **kwargs):
-        from semantic_kernel.agents.agent import AgentResponseItem
-        thread = kwargs.get('thread') or A2AThread()
-        if not hasattr(thread, '_id'):
-            await thread.create()
-        
-        # Always use channel history as it contains the complete conversation
-        actual_messages = messages
-        if hasattr(self, '_current_channel') and hasattr(self._current_channel, 'history'):
-            actual_messages = self._current_channel.history
-        
-        response = await self._invoke_agent(actual_messages)
-        yield AgentResponseItem(message=response, thread=thread)
-    
-    async def invoke_stream(self, messages=None, **kwargs):
-        from semantic_kernel.agents.agent import AgentResponseItem
-        thread = kwargs.get('thread') or A2AThread()
-        if not hasattr(thread, '_id'):
-            await thread.create()
-        response = await self._invoke_agent(messages)
-        streaming_response = StreamingChatMessageContent(role=response.role, content="", name=response.name)
-        streaming_response.append_content(str(response.content))
-        yield AgentResponseItem(message=streaming_response, thread=thread)
-    
-    async def get_response(self, messages=None, **kwargs):
+    async def _get_response_item(self, messages, **kwargs):
         from semantic_kernel.agents.agent import AgentResponseItem
         thread = kwargs.get('thread') or A2AThread()
         if not hasattr(thread, '_id'):
             await thread.create()
         response = await self._invoke_agent(messages)
         return AgentResponseItem(message=response, thread=thread)
+    
+    async def invoke(self, messages=None, **kwargs):
+        yield await self._get_response_item(messages, **kwargs)
+    
+    async def invoke_stream(self, messages=None, **kwargs):
+        item = await self._get_response_item(messages, **kwargs)
+        streaming_response = StreamingChatMessageContent(role=item.message.role, content="", name=item.message.name)
+        streaming_response.append_content(str(item.message.content))
+        item.message = streaming_response
+        yield item
+    
+    async def get_response(self, messages=None, **kwargs):
+        return await self._get_response_item(messages, **kwargs)

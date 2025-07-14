@@ -21,8 +21,9 @@ class AzureDevOpsA2AExecutor(AgentExecutor):
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
         try:
             thread = self.threads.get(context.context_id)
-            response = await self.agent.get_response(messages=context.get_user_input(), thread=thread)
-            print (response)
+            print (context.get_user_input())
+            user_input = context.get_user_input().strip()
+            response = await self.agent.get_response(messages=user_input, thread=thread)
             
             if response and response.thread:
                 self.threads[context.context_id] = response.thread
