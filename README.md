@@ -16,13 +16,13 @@
 This repository is a **technology demonstrator** showcasing the implementation of two protocols for AI agent collaboration: the **Agent2Agent (A2A) protocol** and the **Model Context Protocol (MCP)**.
 
 **What are these protocols?**
-- The **A2A protocol** is an open standard hosted by the Linux Foundation that enables collaboration between AI agents across different platforms, vendors, and technologies
-- The **Model Context Protocol (MCP)** standardizes how applications provide context to LLMs, acting like a universal connector between AI models and various data sources
+- The **Model Context Protocol (MCP)** is a well-established standard created by Anthropic that defines communication between AI agents and tools/data sources. It's widely adopted across AI development tools including GitHub Copilot, Cursor, and Microsoft's ecosystem.
+- The **Agent2Agent (A2A) protocol** is an emerging open standard hosted by the Linux Foundation that aims to enable collaboration between AI agents across different platforms, vendors, and technologies. While promising, it's still in early stages of adoption.
 
 **What this demonstration shows:**
-This project illustrates how to build A2A-compliant agents using Microsoft's ecosystem - Azure AI Foundry, Copilot Studio and Semantic Kernel - while integrating external data sources through MCP. The result is a practical example of assembling a collaborative team of AI agents, each leveraging different Microsoft Cloud capabilities to work together on complex enterprise workflows.
+This project illustrates how to build agents using Microsoft's ecosystem - Azure AI Foundry, Copilot Studio and Semantic Kernel - while integrating external data sources through MCP and exploring A2A for agent-to-agent communication. The result is a practical example of assembling AI agents that can work together, though with varying levels of protocol maturity and support.
 
-Rather than building monolithic AI solutions, this approach demonstrates how specialized agents can be orchestrated to create a truly collaborative AI agent ecosystem where each agent contributes its unique strengths to solve complex business problems.
+Rather than building monolithic AI solutions, this approach demonstrates how specialized agents can be composed to create collaborative AI workflows, with MCP providing mature tool integration and A2A showing the future potential for agent interoperability.
 
 ### Key Features
 
@@ -61,6 +61,52 @@ cd confluence_agent && python main.py # for all agents
 cd group_chat && python main.py # seperate terminal
 ```
 
+## Protocol Support & Maturity
+
+### Current Support Matrix
+
+| Platform | MCP Support | A2A Support | Notes |
+|----------|-------------|-------------|-------|
+| **[Azure AI Foundry Agents](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol-samples)** | ✅ Available (Preview) | 🔄 [Announced](https://azure.microsoft.com/en-us/blog/azure-ai-foundry-your-ai-app-and-agent-factory/) | MCP support in preview, A2A support announced at Build |
+| **[Copilot Studio](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)** | ✅ Available (via OAS) | 🔄 [Announced](https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/whats-new-in-copilot-studio-may-2025/) | MCP via OpenAPI connector |
+| **[Semantic Kernel](https://devblogs.microsoft.com/semantic-kernel/integrating-model-context-protocol-tools-with-semantic-kernel-a-step-by-step-guide/)** | ✅ Available | ⚠️ [.NET Only](https://devblogs.microsoft.com/foundry/semantic-kernel-a2a-integration/) | A2A support limited to .NET stack |
+| **[Azure OpenAI Responses API](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/responses?tabs=python-secure)** | ✅ Available | ❌ Not Available | MCP through tool calling capabilities |
+
+### Protocol Maturity
+
+**Model Context Protocol (MCP)**
+- ✅ **Relatively mature to be considered** for production use
+- ✅ Super popular, wide ecosystem support (specifically across AI development tools)
+- ✅ Security patterns emerging
+- ✅ Supported in Azure API Management and API Center for governance
+- ⚠️ **Security consideration**: Review MCP servers from unknown sources carefully
+
+**Agent2Agent (A2A)**
+- 🔄 **Early stage** - evaluate regularly as support evolves
+- 🔄 Limited platform integration currently available
+- 🔄 Additional complexity may outweigh benefits for single-team projects
+- ✅ **Future potential** for true cross-platform agent interoperability
+- 📋 **Recommendation**: Consider for multi-team scenarios with different tech stacks or heterogeneous AI Agent stacks
+
+### Usage Recommendations
+
+**Choose MCP when:**
+- Building tools for AI agents to consume
+- Want to future-proof tool investments
+- Foster reuse of tools across AI agents
+
+**Consider A2A when:**
+- Multiple teams building agents on different platforms
+- Long-term interoperability is critical
+- You can accept additional implementation complexity
+- Building agents that need to discover and communicate with each other
+
+**Security Best Practices:**
+- Use [Azure AI Gateway patterns](https://github.com/Azure-Samples/AI-Gateway/tree/main/labs/mcp-a2a-agents) for securing MCP servers
+- Deploy MCP servers in Azure Container Apps for isolation
+- Implement additional authorization layers (Often MCP servers require additional authorization)
+- Maintain inventory of MCP servers using [Azure API Center](https://learn.microsoft.com/en-us/azure/api-center/register-discover-mcp-server)
+
 ## References
 
 This project is built on top of several cutting-edge technologies and frameworks:
@@ -83,18 +129,6 @@ This project is built on top of several cutting-edge technologies and frameworks
 
 This project is licensed under the MIT License
 see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- **[Azure AI Foundry](https://azure.microsoft.com/en-us/products/ai-foundry)** for agent infrastructure and deployment platform
-- **[Atlassian MCP](https://www.atlassian.com/blog/announcements/remote-mcp-server)** for Confluence integration capabilities
-- **[Azure Logic Apps](https://learn.microsoft.com/en-us/azure/logic-apps/logic-apps-overview)** for DevOps workflow automation
-- **[Rich](https://rich.readthedocs.io/)** for beautiful terminal interfaces
-- **[A2A Project](https://github.com/a2aproject/A2A)** for the foundational agent communication protocol
-- **[Semantic Kernel](https://learn.microsoft.com/en-us/semantic-kernel/overview/)** for AI orchestration framework
-- **[Model Context Protocol](https://modelcontextprotocol.io/)** for standardized AI-context integration
-
----
 
 <div align="center">
 
