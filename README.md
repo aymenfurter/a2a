@@ -63,6 +63,9 @@ cd group_chat && python main.py # seperate terminal
 
 ## Protocol Support & Maturity
 
+> [!NOTE]  
+> **Disclaimer:** The assessments and recommendations below reflect personal opinions based on current observations of the technology landscape and should not be considered official Microsoft guidance.
+
 ### Current Support Matrix
 
 | Platform | MCP Support | A2A Support | Notes |
