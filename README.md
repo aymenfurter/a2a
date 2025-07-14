@@ -66,14 +66,14 @@ cd group_chat && python main.py # seperate terminal
 > [!NOTE]  
 > **Disclaimer:** The assessments and recommendations below reflect personal opinions based on current observations of the technology landscape and should not be considered official Microsoft guidance.
 
-### Current Support Matrix
+### Current Support Matrix (As per July 2025)
 
 | Platform | MCP Support | A2A Support | Notes |
 |----------|-------------|-------------|-------|
-| **[Azure AI Foundry Agents](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol-samples)** | ✅ Available (Preview) | 🔄 [Announced](https://azure.microsoft.com/en-us/blog/azure-ai-foundry-your-ai-app-and-agent-factory/) | MCP support in preview, A2A support announced at Build |
-| **[Copilot Studio](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)** | ✅ Available (via OAS) | 🔄 [Announced](https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/whats-new-in-copilot-studio-may-2025/) | MCP via OpenAPI connector |
-| **[Semantic Kernel](https://devblogs.microsoft.com/semantic-kernel/integrating-model-context-protocol-tools-with-semantic-kernel-a-step-by-step-guide/)** | ✅ Available | ⚠️ [.NET Only](https://devblogs.microsoft.com/foundry/semantic-kernel-a2a-integration/) | A2A support limited to .NET stack |
-| **[Azure OpenAI Responses API](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/responses?tabs=python-secure)** | ✅ Available | ❌ Not Available | MCP through tool calling capabilities |
+| **[Azure AI Foundry Agents](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/how-to/tools/model-context-protocol-samples)** | Available | [Announced](https://azure.microsoft.com/en-us/blog/azure-ai-foundry-your-ai-app-and-agent-factory/) | MCP support in preview, A2A support announced at Build |
+| **[Copilot Studio](https://learn.microsoft.com/en-us/microsoft-copilot-studio/agent-extend-action-mcp)** | Available/OAS | [Announced](https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/whats-new-in-copilot-studio-may-2025/) | MCP via OpenAPI connector |
+| **[Semantic Kernel](https://devblogs.microsoft.com/semantic-kernel/integrating-model-context-protocol-tools-with-semantic-kernel-a-step-by-step-guide/)** | Available | [.NET Only](https://devblogs.microsoft.com/foundry/semantic-kernel-a2a-integration/) | A2A support limited to .NET stack |
+| **[Azure OpenAI Responses API](https://learn.microsoft.com/en-us/azure/ai-foundry/openai/how-to/responses?tabs=python-secure)** | Available | ❌ | MCP through tool calling capabilities |
 
 ### Protocol Maturity
 
