@@ -19,5 +19,18 @@ azure-ai-projects
 azure-ai-agents==1.1.0b4
 azure-identity
 
+# Azure Monitor for continuous evaluation and querying results
+azure-monitor-query
+azure-monitor-opentelemetry
+
+# OpenTelemetry for tracing
+opentelemetry-sdk
+azure-core-tracing-opentelemetry
+azure-monitor-opentelemetry-exporter
+opentelemetry-exporter-otlp
+
+# Azure AI Evaluation SDK for local evaluation
+azure-ai-evaluation==1.8.0
+
 # Additional utilities
 rich
